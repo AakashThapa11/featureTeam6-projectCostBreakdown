@@ -25,6 +25,18 @@ locals {
   }
 }
 
+// Define the Cost and Usage Report
+resource "aws_cur_report_definition" "cost_and_usage_report" {
+  report_name = "${var.namespace}-costandusagereport"
+  time_unit   = "DAILY"
+  format      = "textORcsv"
+  compression = "ZIP"
+  additional_schema_elements = ["RESOURCES"]
+  s3_bucket  = var.s3_xc3_bucket.bucket
+  s3_prefix  = "cost-metrics/expensive-services/resourcebreakdown/"
+  s3_region  = var.region 
+}
+
 # tflint-ignore: terraform_required_providers
 data "archive_file" "src" {
   for_each    = local.lambda_archive
